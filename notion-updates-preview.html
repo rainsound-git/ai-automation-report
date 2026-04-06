@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notion 更新レポート</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans JP"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Noto Sans JP', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- ヘッダー -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="bg-indigo-600 rounded-lg p-2">
+          <i data-lucide="book-open" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-gray-900">Notion 更新レポート</h1>
+          <p class="text-xs text-gray-500">生徒会 — 最終更新: 2026年4月6日</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 bg-green-50 text-green-700 text-xs font-medium px-3 py-1.5 rounded-full border border-green-200">
+          <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+          自動更新中
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-6 py-8 space-y-8">
+
+    <!-- サマリーカード -->
+    <section>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="bg-white rounded-xl border border-gray-200 p-5">
+          <div class="flex items-center gap-2 text-indigo-600 mb-2">
+            <i data-lucide="file-text" class="w-4 h-4"></i>
+            <span class="text-xs font-semibold uppercase tracking-wide">更新ページ</span>
+          </div>
+          <p class="text-3xl font-bold text-gray-900">8</p>
+          <p class="text-xs text-gray-500 mt-1">直近7日間</p>
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-5">
+          <div class="flex items-center gap-2 text-amber-600 mb-2">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span class="text-xs font-semibold uppercase tracking-wide">新規追加</span>
+          </div>
+          <p class="text-3xl font-bold text-gray-900">3</p>
+          <p class="text-xs text-gray-500 mt-1">直近7日間</p>
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-5">
+          <div class="flex items-center gap-2 text-rose-600 mb-2">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+            <span class="text-xs font-semibold uppercase tracking-wide">削除</span>
+          </div>
+          <p class="text-3xl font-bold text-gray-900">1</p>
+          <p class="text-xs text-gray-500 mt-1">直近7日間</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 更新一覧 -->
+    <section>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-base font-bold text-gray-800 flex items-center gap-2">
+          <i data-lucide="clock" class="w-4 h-4 text-gray-400"></i>
+          更新履歴
+        </h2>
+        <!-- フィルター -->
+        <div class="flex items-center gap-2">
+          <button class="text-xs bg-indigo-600 text-white px-3 py-1.5 rounded-full font-medium">すべて</button>
+          <button class="text-xs bg-white text-gray-600 px-3 py-1.5 rounded-full font-medium border border-gray-200 hover:bg-gray-50">追加</button>
+          <button class="text-xs bg-white text-gray-600 px-3 py-1.5 rounded-full font-medium border border-gray-200 hover:bg-gray-50">編集</button>
+          <button class="text-xs bg-white text-gray-600 px-3 py-1.5 rounded-full font-medium border border-gray-200 hover:bg-gray-50">削除</button>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+
+        <!-- 更新カード: 編集 -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:border-indigo-300 hover:shadow-sm transition-all">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex items-start gap-3 flex-1 min-w-0">
+              <div class="mt-0.5 shrink-0 bg-blue-50 rounded-lg p-2">
+                <i data-lucide="pencil" class="w-4 h-4 text-blue-600"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                  <span class="text-xs font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">編集</span>
+                  <span class="text-xs text-gray-400 flex items-center gap-1">
+                    <i data-lucide="folder" class="w-3 h-3"></i>
+                    議事録
+                  </span>
+                </div>
+                <h3 class="font-semibold text-gray-900 truncate">第3回定例会議 議事録</h3>
+                <p class="text-sm text-gray-500 mt-1 line-clamp-2">
+                  「活動費の予算配分」セクションに金額の修正を追加。承認フローの手順を3ステップから2ステップに簡略化。
+                </p>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-xs text-gray-500">2026/04/06</p>
+              <p class="text-xs text-gray-400">14:32</p>
+              <div class="flex items-center gap-1 mt-2 justify-end">
+                <img src="https://ui-avatars.com/api/?name=田中+花子&size=20&background=6366f1&color=fff&font-size=0.5" class="w-5 h-5 rounded-full" alt="田中花子" />
+                <span class="text-xs text-gray-500">田中 花子</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 差分プレビュー -->
+          <div class="mt-4 rounded-lg border border-gray-100 overflow-hidden text-xs font-mono">
+            <div class="bg-gray-50 border-b border-gray-100 px-3 py-1.5 flex items-center gap-1.5 text-gray-400">
+              <i data-lucide="diff" class="w-3 h-3"></i>
+              <span>変更内容</span>
+            </div>
+            <div class="divide-y divide-gray-50">
+              <div class="flex">
+                <span class="w-8 text-center text-gray-300 bg-rose-50 py-1.5 select-none">-</span>
+                <span class="flex-1 px-3 py-1.5 bg-rose-50 text-rose-700 line-through">予算総額: ¥150,000</span>
+              </div>
+              <div class="flex">
+                <span class="w-8 text-center text-gray-300 bg-green-50 py-1.5 select-none">+</span>
+                <span class="flex-1 px-3 py-1.5 bg-green-50 text-green-700">予算総額: ¥180,000</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 flex items-center justify-end">
+            <a href="#" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1">
+              Notionで開く
+              <i data-lucide="external-link" class="w-3 h-3"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- 更新カード: 新規追加 -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:border-indigo-300 hover:shadow-sm transition-all">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex items-start gap-3 flex-1 min-w-0">
+              <div class="mt-0.5 shrink-0 bg-green-50 rounded-lg p-2">
+                <i data-lucide="file-plus" class="w-4 h-4 text-green-600"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                  <span class="text-xs font-semibold text-green-700 bg-green-50 px-2 py-0.5 rounded">新規追加</span>
+                  <span class="text-xs text-gray-400 flex items-center gap-1">
+                    <i data-lucide="folder" class="w-3 h-3"></i>
+                    お知らせ
+                  </span>
+                </div>
+                <h3 class="font-semibold text-gray-900 truncate">文化祭実行委員会 募集要項</h3>
+                <p class="text-sm text-gray-500 mt-1 line-clamp-2">
+                  文化祭の実行委員を募集するページを新規作成。応募フォームへのリンクと締め切り日を掲載。
+                </p>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-xs text-gray-500">2026/04/05</p>
+              <p class="text-xs text-gray-400">10:15</p>
+              <div class="flex items-center gap-1 mt-2 justify-end">
+                <img src="https://ui-avatars.com/api/?name=山田+太郎&size=20&background=10b981&color=fff&font-size=0.5" class="w-5 h-5 rounded-full" alt="山田太郎" />
+                <span class="text-xs text-gray-500">山田 太郎</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 flex items-center justify-end">
+            <a href="#" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1">
+              Notionで開く
+              <i data-lucide="external-link" class="w-3 h-3"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- 更新カード: 編集 (コメント追加) -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:border-indigo-300 hover:shadow-sm transition-all">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex items-start gap-3 flex-1 min-w-0">
+              <div class="mt-0.5 shrink-0 bg-blue-50 rounded-lg p-2">
+                <i data-lucide="message-square" class="w-4 h-4 text-blue-600"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                  <span class="text-xs font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">コメント追加</span>
+                  <span class="text-xs text-gray-400 flex items-center gap-1">
+                    <i data-lucide="folder" class="w-3 h-3"></i>
+                    タスク管理
+                  </span>
+                </div>
+                <h3 class="font-semibold text-gray-900 truncate">体育祭準備チェックリスト</h3>
+                <p class="text-sm text-gray-500 mt-1 line-clamp-2">
+                  「用具の確認」タスクにコメントが追加されました。
+                </p>
+                <div class="mt-2 bg-gray-50 rounded-lg px-3 py-2 text-sm text-gray-600 border-l-2 border-indigo-300">
+                  「倉庫のカギは職員室で借りられます。担任に確認済みです。」
+                </div>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-xs text-gray-500">2026/04/05</p>
+              <p class="text-xs text-gray-400">09:03</p>
+              <div class="flex items-center gap-1 mt-2 justify-end">
+                <img src="https://ui-avatars.com/api/?name=鈴木+一郎&size=20&background=f59e0b&color=fff&font-size=0.5" class="w-5 h-5 rounded-full" alt="鈴木一郎" />
+                <span class="text-xs text-gray-500">鈴木 一郎</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 flex items-center justify-end">
+            <a href="#" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1">
+              Notionで開く
+              <i data-lucide="external-link" class="w-3 h-3"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- 更新カード: 削除 -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:border-indigo-300 hover:shadow-sm transition-all opacity-75">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex items-start gap-3 flex-1 min-w-0">
+              <div class="mt-0.5 shrink-0 bg-rose-50 rounded-lg p-2">
+                <i data-lucide="trash-2" class="w-4 h-4 text-rose-600"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                  <span class="text-xs font-semibold text-rose-700 bg-rose-50 px-2 py-0.5 rounded">削除</span>
+                  <span class="text-xs text-gray-400 flex items-center gap-1">
+                    <i data-lucide="folder" class="w-3 h-3"></i>
+                    アーカイブ
+                  </span>
+                </div>
+                <h3 class="font-semibold text-gray-500 truncate line-through">旧・役員連絡先リスト（2025年度）</h3>
+                <p class="text-sm text-gray-400 mt-1">
+                  年度が変わったため削除されました。
+                </p>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-xs text-gray-500">2026/04/04</p>
+              <p class="text-xs text-gray-400">17:45</p>
+              <div class="flex items-center gap-1 mt-2 justify-end">
+                <img src="https://ui-avatars.com/api/?name=田中+花子&size=20&background=6366f1&color=fff&font-size=0.5" class="w-5 h-5 rounded-full" alt="田中花子" />
+                <span class="text-xs text-gray-500">田中 花子</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 更新カード: 新規追加 -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 hover:border-indigo-300 hover:shadow-sm transition-all">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex items-start gap-3 flex-1 min-w-0">
+              <div class="mt-0.5 shrink-0 bg-green-50 rounded-lg p-2">
+                <i data-lucide="file-plus" class="w-4 h-4 text-green-600"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                  <span class="text-xs font-semibold text-green-700 bg-green-50 px-2 py-0.5 rounded">新規追加</span>
+                  <span class="text-xs text-gray-400 flex items-center gap-1">
+                    <i data-lucide="folder" class="w-3 h-3"></i>
+                    2026年度
+                  </span>
+                </div>
+                <h3 class="font-semibold text-gray-900 truncate">2026年度 役員名簿</h3>
+                <p class="text-sm text-gray-500 mt-1 line-clamp-2">
+                  新年度の役員名簿を作成。会長・副会長・書記・会計の氏名と連絡先を記載。
+                </p>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-xs text-gray-500">2026/04/03</p>
+              <p class="text-xs text-gray-400">11:20</p>
+              <div class="flex items-center gap-1 mt-2 justify-end">
+                <img src="https://ui-avatars.com/api/?name=佐藤+明&size=20&background=8b5cf6&color=fff&font-size=0.5" class="w-5 h-5 rounded-full" alt="佐藤明" />
+                <span class="text-xs text-gray-500">佐藤 明</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 flex items-center justify-end">
+            <a href="#" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1">
+              Notionで開く
+              <i data-lucide="external-link" class="w-3 h-3"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- フッター -->
+    <footer class="pt-4 border-t border-gray-200 flex items-center justify-between text-xs text-gray-400">
+      <div class="flex items-center gap-1.5">
+        <i data-lucide="info" class="w-3.5 h-3.5"></i>
+        <span>このレポートはNotion APIを使って自動生成されています</span>
+      </div>
+      <a href="#" class="hover:text-gray-600 flex items-center gap-1">
+        <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+        設定
+      </a>
+    </footer>
+
+  </main>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
