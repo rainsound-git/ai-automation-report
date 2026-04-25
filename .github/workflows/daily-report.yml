@@ -1,5 +1,10 @@
 name: Notion 日次レポート & LINE 通知
 
+# 同時に複数走ると push がぶつかるため、1本ずつキューに入れる
+concurrency:
+  group: notion-daily-report-${{ github.repository }}
+  cancel-in-progress: false
+
 on:
   schedule:
     # 毎朝 8:00 JST（= UTC 23:00、前日）に実行
@@ -24,6 +29,11 @@ jobs:
     steps:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v4
+        with:
+          # 深い履歴: rebase / リモート同期で必要
+          fetch-depth: 0
+          # 常に default ブランチ（例: main）
+          ref: ${{ github.event.repository.default_branch }}
 
       - name: Python をセットアップ
         uses: actions/setup-python@v5
@@ -46,14 +56,28 @@ jobs:
         run: python generate_report.py
 
       - name: 生成された HTML をコミット & プッシュ
+        env:
+          BRANCH: ${{ github.event.repository.default_branch }}
         run: |
+          set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add notion1/index.html
           if git diff --cached --quiet; then
             echo "変更なし — コミットをスキップ"
-          else
-            git commit -m "chore: Notion レポートを自動更新 $(date '+%Y-%m-%d')"
-            git pull --rebase origin main
-            git push
+            exit 0
           fi
+          git commit -m "chore: Notion レポートを自動更新 $(date '+%Y-%m-%d')"
+          # リモートが先に進んでいる場合: fetch → rebase → push。レース時は数回リトライ
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BRANCH"
+            git rebase "origin/$BRANCH"
+            if git push "origin" "HEAD:${BRANCH}"; then
+              echo "push 成功"
+              exit 0
+            fi
+            echo "push 失敗 — 再試行 $i/5 ..."
+            sleep 5
+          done
+          echo "push に失敗しました"
+          exit 1
