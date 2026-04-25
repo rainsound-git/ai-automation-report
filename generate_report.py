@@ -500,35 +500,50 @@ def render_html(pages: list[dict], report_date: datetime) -> str:
 # ─── LINE Messaging API 送信 ──────────────────────────────────────────────────
 
 def build_line_message(pages: list[dict], report_date: datetime) -> str:
-    date_str = f"{report_date.year}年{report_date.month}月{report_date.day}日"
-    count_add = sum(1 for p in pages if p["action"] == "add")
-    count_edit = sum(1 for p in pages if p["action"] == "edit")
+    WEEKDAY = ["月", "火", "水", "木", "金", "土", "日"]
+    wd = WEEKDAY[report_date.weekday()]
+    date_str = f"{report_date.year}年{report_date.month}月{report_date.day}日（{wd}）"
+
+    count_add    = sum(1 for p in pages if p["action"] == "add")
+    count_edit   = sum(1 for p in pages if p["action"] == "edit")
     count_delete = sum(1 for p in pages if p["action"] == "delete")
+    total        = len(pages)
 
-    lines = [
-        f"📋【Notion 更新レポート】{date_str}",
-        f"本日の更新: {len(pages)}件",
-        f"  ✅ 新規追加: {count_add}件",
-        f"  ✏️  編集: {count_edit}件",
-        f"  🗑️  削除: {count_delete}件",
-    ]
+    # ── ヘッダー ──────────────────────────────
+    msg = f"╭{'─'*28}╮\n"
+    msg += f"│  🗒  Notion 更新レポート\n"
+    msg += f"│  {date_str}\n"
+    msg += f"╰{'─'*28}╯\n"
 
+    # ── サマリー ──────────────────────────────
+    msg += "\n"
+    msg += f"┌─ 本日のまとめ {'─'*14}┐\n"
+    msg += f"│  📄 新規追加   {count_add:>3} 件\n"
+    msg += f"│  ✏️   編集      {count_edit:>3} 件\n"
+    msg += f"│  🗑️   削除      {count_delete:>3} 件\n"
+    msg += f"│  {'─'*22}\n"
+    msg += f"│  📊 合計       {total:>3} 件\n"
+    msg += f"└{'─'*28}┘\n"
+
+    # ── 更新一覧 ──────────────────────────────
     if pages:
-        lines.append("")
-        lines.append("─────────────────")
-        for p in pages[:10]:
-            icon = {"add": "📄", "edit": "✏️", "delete": "🗑️"}.get(p["action"], "📝")
-            title = p["title"][:25] + "…" if len(p["title"]) > 25 else p["title"]
-            lines.append(f"{icon} {title}")
+        msg += "\n▼ 更新一覧\n"
+        ACTION_ICON = {"add": "📄", "edit": "✏️", "delete": "🗑️"}
+        display = pages[:10]
+        for i, p in enumerate(display):
+            icon  = ACTION_ICON.get(p["action"], "📝")
+            title = p["title"][:22] + "…" if len(p["title"]) > 22 else p["title"]
+            connector = "┗" if i == len(display) - 1 and len(pages) <= 10 else "┣"
+            msg += f" {connector} {icon} {title}\n"
         if len(pages) > 10:
-            lines.append(f"… 他 {len(pages) - 10} 件")
+            msg += f" ┗ … 他 {len(pages) - 10} 件\n"
 
+    # ── フッター ──────────────────────────────
     report_url = os.environ.get("REPORT_URL", "")
     if report_url:
-        lines.append("")
-        lines.append(f"👉 レポートを確認:\n{report_url}")
+        msg += f"\n👉 詳細レポート\n{report_url}"
 
-    return "\n".join(lines)
+    return msg
 
 
 def send_line_message(message: str) -> None:
