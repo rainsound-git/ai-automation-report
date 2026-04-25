@@ -23,7 +23,8 @@ JST = ZoneInfo("Asia/Tokyo")
 
 NOTION_TOKEN = os.environ.get("NOTION_TOKEN", "")
 DATABASE_ID = os.environ.get("NOTION_DATABASE_ID", "")
-LINE_NOTIFY_TOKEN = os.environ.get("LINE_NOTIFY_TOKEN", "")
+LINE_CHANNEL_ACCESS_TOKEN = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN", "")
+LINE_TARGET_ID = os.environ.get("LINE_TARGET_ID", "")
 REPORT_DAYS = int(os.environ.get("REPORT_DAYS", "1"))
 
 OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "notion1", "index.html")
@@ -496,7 +497,7 @@ def render_html(pages: list[dict], report_date: datetime) -> str:
 </html>"""
 
 
-# ─── LINE Notify 送信 ─────────────────────────────────────────────────────────
+# ─── LINE Messaging API 送信 ──────────────────────────────────────────────────
 
 def build_line_message(pages: list[dict], report_date: datetime) -> str:
     date_str = f"{report_date.year}年{report_date.month}月{report_date.day}日"
@@ -505,7 +506,6 @@ def build_line_message(pages: list[dict], report_date: datetime) -> str:
     count_delete = sum(1 for p in pages if p["action"] == "delete")
 
     lines = [
-        "",
         f"📋【Notion 更新レポート】{date_str}",
         f"本日の更新: {len(pages)}件",
         f"  ✅ 新規追加: {count_add}件",
@@ -523,22 +523,32 @@ def build_line_message(pages: list[dict], report_date: datetime) -> str:
         if len(pages) > 10:
             lines.append(f"… 他 {len(pages) - 10} 件")
 
-    lines.append("")
-    lines.append("👉 レポートを確認:")
-    report_url = os.environ.get("REPORT_URL", "（GitHub Pages の URL を設定してください）")
-    lines.append(report_url)
+    report_url = os.environ.get("REPORT_URL", "")
+    if report_url:
+        lines.append("")
+        lines.append(f"👉 レポートを確認:\n{report_url}")
 
     return "\n".join(lines)
 
 
-def send_line_notify(message: str) -> None:
-    if not LINE_NOTIFY_TOKEN:
-        print("LINE_NOTIFY_TOKEN が未設定のため、LINE通知をスキップします")
+def send_line_message(message: str) -> None:
+    if not LINE_CHANNEL_ACCESS_TOKEN:
+        print("LINE_CHANNEL_ACCESS_TOKEN が未設定のため、LINE通知をスキップします")
         return
+    if not LINE_TARGET_ID:
+        print("LINE_TARGET_ID が未設定のため、LINE通知をスキップします")
+        return
+
     resp = requests.post(
-        "https://notify-api.line.me/api/notify",
-        headers={"Authorization": f"Bearer {LINE_NOTIFY_TOKEN}"},
-        data={"message": message},
+        "https://api.line.me/v2/bot/message/push",
+        headers={
+            "Authorization": f"Bearer {LINE_CHANNEL_ACCESS_TOKEN}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "to": LINE_TARGET_ID,
+            "messages": [{"type": "text", "text": message}],
+        },
         timeout=10,
     )
     if resp.status_code == 200:
@@ -569,7 +579,7 @@ def main() -> None:
 
     if pages or os.environ.get("NOTIFY_ALWAYS", "").lower() == "true":
         msg = build_line_message(pages, now)
-        send_line_notify(msg)
+        send_line_message(msg)
     else:
         print("更新なし — LINE 通知をスキップ（NOTIFY_ALWAYS=true で常に送信可）")
 

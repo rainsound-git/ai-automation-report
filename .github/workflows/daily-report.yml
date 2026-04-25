@@ -38,7 +38,8 @@ jobs:
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
-          LINE_NOTIFY_TOKEN: ${{ secrets.LINE_NOTIFY_TOKEN }}
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_TARGET_ID: ${{ secrets.LINE_TARGET_ID }}
           REPORT_URL: ${{ secrets.REPORT_URL }}
           REPORT_DAYS: ${{ github.event.inputs.report_days || '1' }}
           NOTIFY_ALWAYS: ${{ github.event.inputs.notify_always || 'false' }}
@@ -53,5 +54,6 @@ jobs:
             echo "変更なし — コミットをスキップ"
           else
             git commit -m "chore: Notion レポートを自動更新 $(date '+%Y-%m-%d')"
+            git pull --rebase origin main
             git push
           fi

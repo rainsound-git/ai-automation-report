@@ -40,12 +40,29 @@ https://www.notion.so/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx?v=...
                       この32文字がデータベースID
 ```
 
-### 3. LINE Notify トークンを取得
+### 3. LINE Messaging API チャネルを作成
 
-1. https://notify-bot.line.me/my/ を開く（LINEアカウントでログイン）
-2. 「トークンを発行する」をクリック
-3. トークン名を入力し、通知を送るトーク（自分・グループ）を選択
-4. 発行されたトークンをコピー
+#### チャネル作成
+1. https://developers.line.biz/console/ を開く（LINEアカウントでログイン）
+2. 「プロバイダーを作成」→ 名前を入力して作成（例: `生徒会Bot`）
+3. 「新規チャネル作成」→「**Messaging API**」を選択
+4. 必要項目を入力して作成：
+   - チャネル名: 例 `Notion更新Bot`
+   - チャネル説明: 適当に
+   - 大業種 / 小業種: 適当に選択
+
+#### チャネルアクセストークンを発行
+1. 作成したチャネルの「**Messaging API設定**」タブを開く
+2. 一番下の「**チャネルアクセストークン（長期）**」の「発行」をクリック
+3. 表示されたトークンをコピー
+
+#### 自分のユーザーIDを確認
+1. 同じページの「**Messaging API設定**」タブ
+2. QRコードの下に「**あなたのユーザーID**」が `U` から始まる文字列で表示される
+3. これをコピー（`Uxxxxxxxx...`）
+
+#### Botを友だち追加
+QRコードを自分のLINEでスキャンして Bot を友だち追加してください（追加しないとメッセージが届きません）。
 
 ### 4. GitHub Secrets に登録
 
@@ -55,7 +72,8 @@ https://www.notion.so/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx?v=...
 |---|---|
 | `NOTION_TOKEN` | `secret_xxx...`（手順1で取得） |
 | `NOTION_DATABASE_ID` | 32文字のID（手順2で確認） |
-| `LINE_NOTIFY_TOKEN` | LINE Notify トークン（手順3で取得） |
+| `LINE_CHANNEL_ACCESS_TOKEN` | チャネルアクセストークン（手順3で取得） |
+| `LINE_TARGET_ID` | あなたのユーザーID `Uxxxxxxxx...`（手順3で確認） |
 | `REPORT_URL` | `https://yourname.github.io/ai-automation-report/notion1/` |
 
 ### 5. GitHub Pages を有効化
