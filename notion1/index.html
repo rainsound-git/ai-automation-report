@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notion 更新レポート — 生徒会</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background-color: #eaecf5;
+      background-image:
+        radial-gradient(ellipse 90% 50% at 15% 0%,   rgba(99,102,241,0.10) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 40% at 85% 100%, rgba(16,185,129,0.08) 0%, transparent 55%),
+        radial-gradient(circle, #c4c7d8 1px, transparent 1px);
+      background-size: auto, auto, 22px 22px;
+      min-height: 100vh;
+    }
+
+    /* ─────────── HEADER ─────────── */
+    .header-bg {
+      background: linear-gradient(150deg, #040919 0%, #0b1432 35%, #111e55 65%, #0e0b35 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    /* mesh glow overlays */
+    .header-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 55% 120% at 90% 40%,  rgba(99,102,241,0.30) 0%, transparent 60%),
+        radial-gradient(ellipse 35% 70%  at  5% 90%,  rgba(16,185,129,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 60%  at 50% -20%, rgba(167,139,250,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    /* subtle grid lines */
+    .header-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+    /* rainbow bottom border */
+    .header-bottom-line {
+      height: 1px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(99,102,241,0.5) 25%,
+        rgba(167,139,250,0.6) 50%,
+        rgba(52,211,153,0.4) 75%,
+        transparent 100%);
+    }
+    .header-content { position: relative; z-index: 2; }
+
+    /* logo ring */
+    .logo-ring {
+      background: linear-gradient(135deg, rgba(129,140,248,0.25) 0%, rgba(52,211,153,0.15) 100%);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow:
+        0 0 24px rgba(99,102,241,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.18);
+    }
+
+    /* stat cards */
+    .stat-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      backdrop-filter: blur(18px);
+      border-radius: 18px;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .stat-card:hover { background: rgba(255,255,255,0.08); transform: translateY(-1px); }
+    .stat-card-blue  { box-shadow: inset 0 1px 0 rgba(129,140,248,0.25), 0 4px 20px rgba(99,102,241,0.12); }
+    .stat-card-green { box-shadow: inset 0 1px 0 rgba(52,211,153,0.25),  0 4px 20px rgba(16,185,129,0.10); }
+    .stat-card-rose  { box-shadow: inset 0 1px 0 rgba(251,113,133,0.25), 0 4px 20px rgba(244,63,94,0.10); }
+
+    /* shimmer on big numbers */
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position:  200% center; }
+    }
+    .stat-num {
+      background: linear-gradient(90deg, #fff 25%, rgba(196,212,255,0.9) 50%, #fff 75%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3.5s linear infinite;
+    }
+
+    /* ─────────── CARDS ─────────── */
+    .card {
+      background: #ffffff;
+      border-radius: 22px;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(0,0,0,0.04),
+        0 2px 4px  rgba(0,0,0,0.03),
+        0 8px 24px rgba(0,0,0,0.06),
+        0 20px 48px rgba(0,0,0,0.04);
+      transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.28s ease;
+    }
+    /* top highlight line */
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.9) 50%, transparent 100%);
+      pointer-events: none;
+    }
+    .card:hover {
+      transform: translateY(-4px) scale(1.003);
+      box-shadow:
+        0 0 0 1px rgba(0,0,0,0.05),
+        0 4px 8px  rgba(0,0,0,0.05),
+        0 16px 40px rgba(0,0,0,0.10),
+        0 32px 64px rgba(0,0,0,0.06);
+    }
+
+    /* gradient left accent bar via pseudo-element */
+    .card-accent {
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 5px;
+      border-radius: 22px 0 0 22px;
+    }
+    .accent-indigo { background: linear-gradient(180deg, #6366f1 0%, #818cf8 60%, #a5b4fc 100%); }
+    .accent-emerald { background: linear-gradient(180deg, #059669 0%, #10b981 60%, #34d399 100%); }
+    .accent-amber { background: linear-gradient(180deg, #d97706 0%, #f59e0b 60%, #fcd34d 100%); }
+    .accent-rose { background: linear-gradient(180deg, #e11d48 0%, #f43f5e 60%, #fb7185 100%); }
+
+    /* icon containers */
+    .icon-wrap {
+      width: 40px; height: 40px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .icon-wrap-indigo  { background: linear-gradient(135deg, #eef2ff, #e0e7ff); border: 1px solid rgba(99,102,241,0.18); }
+    .icon-wrap-emerald { background: linear-gradient(135deg, #ecfdf5, #d1fae5); border: 1px solid rgba(16,185,129,0.18); }
+    .icon-wrap-amber   { background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 1px solid rgba(245,158,11,0.18); }
+    .icon-wrap-rose    { background: linear-gradient(135deg, #fff1f2, #ffe4e6); border: 1px solid rgba(244,63,94,0.18); }
+
+    /* ─────────── BADGES ─────────── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10.5px; font-weight: 700;
+      padding: 3px 10px; border-radius: 999px;
+      letter-spacing: 0.03em;
+    }
+    .badge-edit    { background: linear-gradient(135deg,#eef2ff,#e0e7ff); color:#4338ca; border:1px solid rgba(99,102,241,0.22); }
+    .badge-add     { background: linear-gradient(135deg,#ecfdf5,#d1fae5); color:#047857; border:1px solid rgba(16,185,129,0.22); }
+    .badge-delete  { background: linear-gradient(135deg,#fff1f2,#ffe4e6); color:#be123c; border:1px solid rgba(244,63,94,0.22); }
+    .badge-comment { background: linear-gradient(135deg,#fffbeb,#fef3c7); color:#92400e; border:1px solid rgba(245,158,11,0.22); }
+
+    /* ─────────── DIFF ─────────── */
+    .diff-remove { background:#fff5f5; color:#b91c1c; border-left:3px solid #fca5a5; }
+    .diff-add    { background:#f0fdf4; color:#15803d; border-left:3px solid #6ee7b7; }
+
+    /* ─────────── NOTION LINK ─────────── */
+    .notion-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+      border: 1px solid rgba(139,92,246,0.22);
+      color: #4f46e5;
+      font-size: 11px; font-weight: 700;
+      padding: 5px 13px; border-radius: 999px;
+      text-decoration: none; letter-spacing: 0.02em;
+      box-shadow: 0 1px 4px rgba(99,102,241,0.12);
+      transition: all 0.18s ease;
+    }
+    .notion-link:hover {
+      background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+      color: #3730a3;
+      box-shadow: 0 3px 12px rgba(99,102,241,0.28);
+      transform: translateY(-1px);
+    }
+
+    /* ─────────── TIME BADGE ─────────── */
+    .time-badge {
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      border: 1px solid rgba(226,232,240,0.9);
+      color: #94a3b8;
+      font-size: 11px; font-weight: 700;
+      padding: 4px 11px; border-radius: 999px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ─────────── FILTER TABS ─────────── */
+    .filter-active {
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(79,70,229,0.38), inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+    .filter-btn {
+      font-size: 12px; font-weight: 600;
+      padding: 7px 16px; border-radius: 999px;
+      border: none; cursor: pointer;
+      transition: all 0.18s ease;
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    .filter-inactive {
+      background: #fff; color: #64748b;
+      border: 1px solid rgba(226,232,240,0.9) !important;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .filter-inactive:hover {
+      background: #f5f3ff; color: #4338ca;
+      border-color: rgba(199,210,254,0.9) !important;
+      box-shadow: 0 2px 8px rgba(99,102,241,0.12);
+    }
+
+    /* ─────────── DATE DIVIDER ─────────── */
+    .date-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: linear-gradient(135deg, #a5b4fc, #818cf8);
+      box-shadow: 0 0 6px rgba(99,102,241,0.4);
+      flex-shrink: 0;
+    }
+    .date-line {
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, rgba(148,163,184,0.35) 0%, rgba(148,163,184,0.15) 100%);
+    }
+
+    /* ─────────── ANIMATIONS ─────────── */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate-card { animation: fadeSlideUp 0.45s cubic-bezier(0.22,1,0.36,1) both; }
+    .delay-1 { animation-delay: 0.05s; }
+    .delay-2 { animation-delay: 0.12s; }
+    .delay-3 { animation-delay: 0.19s; }
+    .delay-4 { animation-delay: 0.26s; }
+    .delay-5 { animation-delay: 0.33s; }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(52,211,153,0.5); }
+      50%       { opacity: 0.75; box-shadow: 0 0 0 4px rgba(52,211,153,0); }
+    }
+    .live-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+    /* comment quote bar */
+    .quote-bar {
+      width: 3px; border-radius: 3px;
+      background: linear-gradient(180deg, #fcd34d, #f59e0b);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════ HEADER ══════════ -->
+  <header class="header-bg sticky top-0 z-20">
+    <div class="header-content max-w-3xl mx-auto px-6">
+
+      <!-- nav row -->
+      <div class="flex items-center justify-between pt-7 pb-5">
+        <div class="flex items-center gap-4">
+          <div class="logo-ring w-11 h-11 rounded-2xl flex items-center justify-center">
+            <i data-lucide="layout-dashboard" class="w-5 h-5 text-indigo-200"></i>
+          </div>
+          <div>
+            <p class="text-indigo-300/60 text-[10px] font-bold tracking-[0.22em] uppercase mb-0.5">Student Council</p>
+            <h1 class="text-white text-xl font-extrabold leading-tight tracking-tight">Notion 更新レポート</h1>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-1.5 text-white/45 text-xs font-medium">
+            <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+            <span>2026年4月6日</span>
+          </div>
+          <div class="w-px h-4 bg-white/12 rounded"></div>
+          <div class="flex items-center gap-2 bg-emerald-500/12 border border-emerald-400/22 text-emerald-300 text-xs font-bold px-3.5 py-2 rounded-full">
+            <span class="live-dot w-2 h-2 bg-emerald-400 rounded-full block"></span>
+            自動更新中
+          </div>
+        </div>
+      </div>
+
+      <!-- stat row -->
+      <div class="grid grid-cols-3 gap-3 pb-7 border-t border-white/[0.07] pt-5">
+
+        <div class="stat-card stat-card-blue px-4 py-4">
+          <div class="flex items-center gap-2 mb-2.5">
+            <div class="w-6 h-6 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+              <i data-lucide="file-text" class="w-3.5 h-3.5 text-indigo-300"></i>
+            </div>
+            <span class="text-white/40 text-[11px] font-semibold tracking-wide">更新ページ</span>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <span class="stat-num text-3xl font-extrabold leading-none tabular-nums">8</span>
+            <span class="text-white/25 text-xs font-medium">件 / 7日</span>
+          </div>
+        </div>
+
+        <div class="stat-card stat-card-green px-4 py-4">
+          <div class="flex items-center gap-2 mb-2.5">
+            <div class="w-6 h-6 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+              <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-emerald-300"></i>
+            </div>
+            <span class="text-white/40 text-[11px] font-semibold tracking-wide">新規追加</span>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <span class="stat-num text-3xl font-extrabold leading-none tabular-nums">3</span>
+            <span class="text-white/25 text-xs font-medium">件 / 7日</span>
+          </div>
+        </div>
+
+        <div class="stat-card stat-card-rose px-4 py-4">
+          <div class="flex items-center gap-2 mb-2.5">
+            <div class="w-6 h-6 rounded-lg bg-rose-500/20 flex items-center justify-center">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5 text-rose-300"></i>
+            </div>
+            <span class="text-white/40 text-[11px] font-semibold tracking-wide">削除</span>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <span class="stat-num text-3xl font-extrabold leading-none tabular-nums">1</span>
+            <span class="text-white/25 text-xs font-medium">件 / 7日</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="header-bottom-line"></div>
+  </header>
+
+  <!-- ══════════ MAIN ══════════ -->
+  <main class="max-w-3xl mx-auto px-6 py-9">
+
+    <!-- filter tabs -->
+    <div class="flex items-center gap-2 mb-8">
+      <span class="text-[11px] font-bold text-slate-400 tracking-widest mr-1 uppercase">絞り込み</span>
+      <button class="filter-btn filter-active">すべて</button>
+      <button class="filter-btn filter-inactive">
+        <i data-lucide="pencil" class="w-3.5 h-3.5"></i>編集
+      </button>
+      <button class="filter-btn filter-inactive">
+        <i data-lucide="file-plus" class="w-3.5 h-3.5"></i>追加
+      </button>
+      <button class="filter-btn filter-inactive">
+        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>削除
+      </button>
+    </div>
+
+    <!-- ══ TIMELINE ══ -->
+    <div class="space-y-3">
+
+      <!-- date divider -->
+      <div class="flex items-center gap-2.5 mb-2">
+        <div class="date-dot"></div>
+        <span class="text-[10.5px] font-bold text-slate-400 tracking-[0.18em] uppercase whitespace-nowrap">今日 — 2026年4月6日</span>
+        <div class="date-line"></div>
+      </div>
+
+      <!-- ▸ Card 1: 編集 -->
+      <div class="card animate-card delay-1">
+        <div class="card-accent accent-indigo"></div>
+        <div class="p-6 pl-7 flex items-start justify-between gap-5">
+
+          <div class="flex items-start gap-4 flex-1 min-w-0">
+            <div class="icon-wrap icon-wrap-indigo mt-0.5">
+              <i data-lucide="pencil" class="w-4.5 h-4.5 text-indigo-600" style="width:18px;height:18px"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="badge badge-edit">
+                  <i data-lucide="pencil" class="w-3 h-3"></i> 編集
+                </span>
+                <span class="text-slate-400 text-xs flex items-center gap-1 font-semibold">
+                  <i data-lucide="folder" class="w-3 h-3"></i> 議事録
+                </span>
+              </div>
+              <h3 class="font-bold text-slate-900 text-[15px] leading-snug tracking-tight">第3回定例会議 議事録</h3>
+              <p class="text-slate-500 text-sm mt-1.5 leading-relaxed">
+                「活動費の予算配分」セクションに金額の修正を追加。承認フローを3ステップから2ステップに簡略化。
+              </p>
+
+              <!-- diff preview -->
+              <div class="mt-4 rounded-2xl overflow-hidden text-xs font-mono border border-slate-100/80 shadow-sm">
+                <div class="bg-slate-50/80 border-b border-slate-100 px-4 py-2.5 flex items-center gap-2 text-slate-400">
+                  <i data-lucide="git-diff" class="w-3.5 h-3.5"></i>
+                  <span class="font-sans font-bold text-[10.5px] tracking-wider uppercase">変更内容</span>
+                </div>
+                <div class="diff-remove flex items-center px-4 py-2.5 gap-3">
+                  <span class="text-red-400 font-black w-3 shrink-0 select-none">−</span>
+                  <span class="line-through opacity-55">予算総額: ¥150,000</span>
+                </div>
+                <div class="diff-add flex items-center px-4 py-2.5 gap-3">
+                  <span class="text-emerald-600 font-black w-3 shrink-0 select-none">+</span>
+                  <span>予算総額: ¥180,000</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="shrink-0 flex flex-col items-end gap-2.5">
+            <span class="time-badge">14:32</span>
+            <div class="flex items-center gap-2">
+              <img src="https://ui-avatars.com/api/?name=田中+花子&size=36&background=4f46e5&color=fff&bold=true&font-size=0.45"
+                class="w-9 h-9 rounded-full" style="box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(99,102,241,0.3)" alt="田中花子" />
+              <span class="text-xs text-slate-700 font-bold">田中 花子</span>
+            </div>
+            <a href="#" class="notion-link">
+              Notionで開く <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- date divider -->
+      <div class="flex items-center gap-2.5 pt-4 mb-2">
+        <div class="date-dot"></div>
+        <span class="text-[10.5px] font-bold text-slate-400 tracking-[0.18em] uppercase whitespace-nowrap">昨日 — 2026年4月5日</span>
+        <div class="date-line"></div>
+      </div>
+
+      <!-- ▸ Card 2: 新規追加 -->
+      <div class="card animate-card delay-2">
+        <div class="card-accent accent-emerald"></div>
+        <div class="p-6 pl-7 flex items-start justify-between gap-5">
+
+          <div class="flex items-start gap-4 flex-1 min-w-0">
+            <div class="icon-wrap icon-wrap-emerald mt-0.5">
+              <i data-lucide="file-plus" class="w-4.5 h-4.5 text-emerald-600" style="width:18px;height:18px"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="badge badge-add">
+                  <i data-lucide="file-plus" class="w-3 h-3"></i> 新規追加
+                </span>
+                <span class="text-slate-400 text-xs flex items-center gap-1 font-semibold">
+                  <i data-lucide="folder" class="w-3 h-3"></i> お知らせ
+                </span>
+              </div>
+              <h3 class="font-bold text-slate-900 text-[15px] leading-snug tracking-tight">文化祭実行委員会 募集要項</h3>
+              <p class="text-slate-500 text-sm mt-1.5 leading-relaxed">
+                文化祭の実行委員を募集するページを新規作成。応募フォームへのリンクと締め切り日を掲載。
+              </p>
+            </div>
+          </div>
+
+          <div class="shrink-0 flex flex-col items-end gap-2.5">
+            <span class="time-badge">10:15</span>
+            <div class="flex items-center gap-2">
+              <img src="https://ui-avatars.com/api/?name=山田+太郎&size=36&background=059669&color=fff&bold=true&font-size=0.45"
+                class="w-9 h-9 rounded-full" style="box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(16,185,129,0.3)" alt="山田太郎" />
+              <span class="text-xs text-slate-700 font-bold">山田 太郎</span>
+            </div>
+            <a href="#" class="notion-link">
+              Notionで開く <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ▸ Card 3: コメント -->
+      <div class="card animate-card delay-3">
+        <div class="card-accent accent-amber"></div>
+        <div class="p-6 pl-7 flex items-start justify-between gap-5">
+
+          <div class="flex items-start gap-4 flex-1 min-w-0">
+            <div class="icon-wrap icon-wrap-amber mt-0.5">
+              <i data-lucide="message-square" class="text-amber-600" style="width:18px;height:18px"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="badge badge-comment">
+                  <i data-lucide="message-square" class="w-3 h-3"></i> コメント
+                </span>
+                <span class="text-slate-400 text-xs flex items-center gap-1 font-semibold">
+                  <i data-lucide="folder" class="w-3 h-3"></i> タスク管理
+                </span>
+              </div>
+              <h3 class="font-bold text-slate-900 text-[15px] leading-snug tracking-tight">体育祭準備チェックリスト</h3>
+              <p class="text-slate-500 text-sm mt-1.5 leading-relaxed">「用具の確認」タスクにコメントが追加されました。</p>
+
+              <!-- quote -->
+              <div class="mt-3.5 flex gap-3 bg-amber-50/60 rounded-xl px-4 py-3 border border-amber-100/70">
+                <div class="quote-bar"></div>
+                <p class="text-slate-600 text-sm leading-relaxed italic">
+                  「倉庫のカギは職員室で借りられます。担任に確認済みです。」
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="shrink-0 flex flex-col items-end gap-2.5">
+            <span class="time-badge">09:03</span>
+            <div class="flex items-center gap-2">
+              <img src="https://ui-avatars.com/api/?name=鈴木+一郎&size=36&background=d97706&color=fff&bold=true&font-size=0.45"
+                class="w-9 h-9 rounded-full" style="box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(245,158,11,0.3)" alt="鈴木一郎" />
+              <span class="text-xs text-slate-700 font-bold">鈴木 一郎</span>
+            </div>
+            <a href="#" class="notion-link">
+              Notionで開く <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- date divider -->
+      <div class="flex items-center gap-2.5 pt-4 mb-2">
+        <div class="date-dot"></div>
+        <span class="text-[10.5px] font-bold text-slate-400 tracking-[0.18em] uppercase whitespace-nowrap">2026年4月4日</span>
+        <div class="date-line"></div>
+      </div>
+
+      <!-- ▸ Card 4: 削除 -->
+      <div class="card animate-card delay-4" style="opacity:0.58">
+        <div class="card-accent accent-rose"></div>
+        <div class="p-6 pl-7 flex items-start justify-between gap-5">
+
+          <div class="flex items-start gap-4 flex-1 min-w-0">
+            <div class="icon-wrap icon-wrap-rose mt-0.5">
+              <i data-lucide="trash-2" class="text-rose-500" style="width:18px;height:18px"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="badge badge-delete">
+                  <i data-lucide="trash-2" class="w-3 h-3"></i> 削除
+                </span>
+                <span class="text-slate-400 text-xs flex items-center gap-1 font-semibold">
+                  <i data-lucide="folder" class="w-3 h-3"></i> アーカイブ
+                </span>
+              </div>
+              <h3 class="font-bold text-slate-400 text-[15px] leading-snug tracking-tight line-through decoration-slate-300">旧・役員連絡先リスト（2025年度）</h3>
+              <p class="text-slate-400 text-sm mt-1.5 leading-relaxed">年度が変わったため削除されました。</p>
+            </div>
+          </div>
+
+          <div class="shrink-0 flex flex-col items-end gap-2.5">
+            <span class="time-badge">17:45</span>
+            <div class="flex items-center gap-2">
+              <img src="https://ui-avatars.com/api/?name=田中+花子&size=36&background=4f46e5&color=fff&bold=true&font-size=0.45"
+                class="w-9 h-9 rounded-full" style="box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(99,102,241,0.25)" alt="田中花子" />
+              <span class="text-xs text-slate-600 font-bold">田中 花子</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- date divider -->
+      <div class="flex items-center gap-2.5 pt-4 mb-2">
+        <div class="date-dot"></div>
+        <span class="text-[10.5px] font-bold text-slate-400 tracking-[0.18em] uppercase whitespace-nowrap">2026年4月3日</span>
+        <div class="date-line"></div>
+      </div>
+
+      <!-- ▸ Card 5: 新規追加 -->
+      <div class="card animate-card delay-5">
+        <div class="card-accent accent-emerald"></div>
+        <div class="p-6 pl-7 flex items-start justify-between gap-5">
+
+          <div class="flex items-start gap-4 flex-1 min-w-0">
+            <div class="icon-wrap icon-wrap-emerald mt-0.5">
+              <i data-lucide="file-plus" class="text-emerald-600" style="width:18px;height:18px"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="badge badge-add">
+                  <i data-lucide="file-plus" class="w-3 h-3"></i> 新規追加
+                </span>
+                <span class="text-slate-400 text-xs flex items-center gap-1 font-semibold">
+                  <i data-lucide="folder" class="w-3 h-3"></i> 2026年度
+                </span>
+              </div>
+              <h3 class="font-bold text-slate-900 text-[15px] leading-snug tracking-tight">2026年度 役員名簿</h3>
+              <p class="text-slate-500 text-sm mt-1.5 leading-relaxed">
+                新年度の役員名簿を作成。会長・副会長・書記・会計の氏名と連絡先を記載。
+              </p>
+            </div>
+          </div>
+
+          <div class="shrink-0 flex flex-col items-end gap-2.5">
+            <span class="time-badge">11:20</span>
+            <div class="flex items-center gap-2">
+              <img src="https://ui-avatars.com/api/?name=佐藤+明&size=36&background=7c3aed&color=fff&bold=true&font-size=0.45"
+                class="w-9 h-9 rounded-full" style="box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(124,58,237,0.3)" alt="佐藤明" />
+              <span class="text-xs text-slate-700 font-bold">佐藤 明</span>
+            </div>
+            <a href="#" class="notion-link">
+              Notionで開く <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /timeline -->
+
+    <!-- footer -->
+    <footer class="mt-14 pt-5 flex items-center justify-between">
+      <div class="h-px flex-1 bg-gradient-to-r from-slate-200/80 to-transparent mr-6 rounded"></div>
+      <div class="flex items-center gap-5">
+        <div class="flex items-center gap-2 text-slate-400 text-xs font-semibold">
+          <div class="w-5 h-5 rounded-md bg-indigo-50 border border-indigo-100 flex items-center justify-center">
+            <i data-lucide="zap" class="w-3 h-3 text-indigo-400"></i>
+          </div>
+          <span>Notion API で自動生成</span>
+        </div>
+        <a href="#" class="flex items-center gap-1.5 text-slate-400 hover:text-indigo-500 text-xs font-bold transition-colors">
+          <i data-lucide="settings" class="w-3.5 h-3.5"></i> 設定
+        </a>
+      </div>
+    </footer>
+
+  </main>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
+
+</html>

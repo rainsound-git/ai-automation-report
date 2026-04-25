@@ -1,0 +1,57 @@
+name: Notion 日次レポート & LINE 通知
+
+on:
+  schedule:
+    # 毎朝 8:00 JST（= UTC 23:00、前日）に実行
+    - cron: "0 23 * * *"
+  workflow_dispatch:
+    inputs:
+      report_days:
+        description: "何日分の更新を取得するか"
+        required: false
+        default: "1"
+      notify_always:
+        description: "更新がなくても LINE 通知する (true/false)"
+        required: false
+        default: "false"
+
+jobs:
+  generate-and-notify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Python をセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: 依存パッケージをインストール
+        run: pip install -r requirements.txt
+
+      - name: レポート生成 & LINE 通知
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          LINE_NOTIFY_TOKEN: ${{ secrets.LINE_NOTIFY_TOKEN }}
+          REPORT_URL: ${{ secrets.REPORT_URL }}
+          REPORT_DAYS: ${{ github.event.inputs.report_days || '1' }}
+          NOTIFY_ALWAYS: ${{ github.event.inputs.notify_always || 'false' }}
+        run: python generate_report.py
+
+      - name: 生成された HTML をコミット & プッシュ
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add notion1/index.html
+          if git diff --cached --quiet; then
+            echo "変更なし — コミットをスキップ"
+          else
+            git commit -m "chore: Notion レポートを自動更新 $(date '+%Y-%m-%d')"
+            git push
+          fi
