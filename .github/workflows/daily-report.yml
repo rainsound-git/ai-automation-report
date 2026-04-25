@@ -1,10 +1,5 @@
 name: Notion 日次レポート & LINE 通知
 
-# 同時に複数走ると push がぶつかるため、1本ずつキューに入れる
-concurrency:
-  group: notion-daily-report-${{ github.repository }}
-  cancel-in-progress: false
-
 on:
   schedule:
     # 毎朝 8:00 JST（= UTC 23:00、前日）に実行
@@ -21,26 +16,12 @@ on:
         default: "false"
 
 jobs:
-  generate-and-notify:
+  notify:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v4
-        with:
-          # 深い履歴: rebase / リモート同期で必要
-          fetch-depth: 0
-          # schedule では github.event.repository などが使えないことがあるため
-          # default_branch ではなく「このワークフローが走っているブランチ名」を使う
-          ref: ${{ github.ref_name }}
-
-      - name: リモートの先頭に同期（古い main でレポートを作るのを防ぐ）
-        run: |
-          set -e
-          git fetch origin
-          git reset --hard "origin/${{ github.ref_name }}"
 
       - name: Python をセットアップ
         uses: actions/setup-python@v5
@@ -51,46 +32,12 @@ jobs:
       - name: 依存パッケージをインストール
         run: pip install -r requirements.txt
 
-      - name: レポート生成 & LINE 通知
+      - name: Notion 取得 & LINE 通知
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
           LINE_TARGET_ID: ${{ secrets.LINE_TARGET_ID }}
-          REPORT_URL: ${{ secrets.REPORT_URL }}
           REPORT_DAYS: ${{ github.event.inputs.report_days || '1' }}
           NOTIFY_ALWAYS: ${{ github.event.inputs.notify_always || 'false' }}
         run: python generate_report.py
-
-      - name: 生成された HTML をコミット & プッシュ
-        # github.event.repository.default_branch は schedule などで空になるため使わない
-        env:
-          BRANCH: ${{ github.ref_name }}
-        run: |
-          set -e
-          if [ -z "$BRANCH" ]; then
-            echo "ERROR: ref_name が空です" >&2
-            exit 1
-          fi
-          echo "使用ブランチ: $BRANCH"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add notion1/index.html
-          if git diff --cached --quiet; then
-            echo "変更なし — コミットをスキップ"
-            exit 0
-          fi
-          git commit -m "chore: Notion レポートを自動更新 $(date '+%Y-%m-%d')"
-          for i in 1 2 3 4 5; do
-            echo "=== push 試行 $i/5 ==="
-            git fetch origin "$BRANCH" --prune
-            git rebase "origin/${BRANCH}"
-            if git push "origin" "HEAD:${BRANCH}"; then
-              echo "push 成功"
-              exit 0
-            fi
-            echo "push 失敗（リトライ $i/5 後に再取得）"
-            sleep 5
-          done
-          echo "push に失敗しました"
-          exit 1
