@@ -32,8 +32,15 @@ jobs:
         with:
           # 深い履歴: rebase / リモート同期で必要
           fetch-depth: 0
-          # 常に default ブランチ（例: main）
-          ref: ${{ github.event.repository.default_branch }}
+          # schedule では github.event.repository などが使えないことがあるため
+          # default_branch ではなく「このワークフローが走っているブランチ名」を使う
+          ref: ${{ github.ref_name }}
+
+      - name: リモートの先頭に同期（古い main でレポートを作るのを防ぐ）
+        run: |
+          set -e
+          git fetch origin
+          git reset --hard "origin/${{ github.ref_name }}"
 
       - name: Python をセットアップ
         uses: actions/setup-python@v5
@@ -56,10 +63,16 @@ jobs:
         run: python generate_report.py
 
       - name: 生成された HTML をコミット & プッシュ
+        # github.event.repository.default_branch は schedule などで空になるため使わない
         env:
-          BRANCH: ${{ github.event.repository.default_branch }}
+          BRANCH: ${{ github.ref_name }}
         run: |
           set -e
+          if [ -z "$BRANCH" ]; then
+            echo "ERROR: ref_name が空です" >&2
+            exit 1
+          fi
+          echo "使用ブランチ: $BRANCH"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add notion1/index.html
@@ -68,15 +81,15 @@ jobs:
             exit 0
           fi
           git commit -m "chore: Notion レポートを自動更新 $(date '+%Y-%m-%d')"
-          # リモートが先に進んでいる場合: fetch → rebase → push。レース時は数回リトライ
           for i in 1 2 3 4 5; do
-            git fetch origin "$BRANCH"
-            git rebase "origin/$BRANCH"
+            echo "=== push 試行 $i/5 ==="
+            git fetch origin "$BRANCH" --prune
+            git rebase "origin/${BRANCH}"
             if git push "origin" "HEAD:${BRANCH}"; then
               echo "push 成功"
               exit 0
             fi
-            echo "push 失敗 — 再試行 $i/5 ..."
+            echo "push 失敗（リトライ $i/5 後に再取得）"
             sleep 5
           done
           echo "push に失敗しました"
